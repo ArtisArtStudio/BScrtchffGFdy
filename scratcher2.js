@@ -191,7 +191,7 @@ Scratcher = (function() {
         //can.getContext("2d", { willReadFrequently: true });
         ctx.lineWidth = 30;
         ctx.lineCap = ctx.lineJoin = 'round';
-        ctx.strokeStyle = 'rgba(255,255 ,255 , 0.1)'; //'rgba(0, 0, 0, 0.03)'; // can be any opaque color
+        ctx.strokeStyle = 'rgba(255,255 ,255 , 0.5)'; //'rgba(0, 0, 0, 0.03)'; // can be any opaque color
         
         if (fresh) {
             ctx.beginPath();
@@ -329,14 +329,14 @@ Scratcher = (function() {
     }
     function drawHeart(ctx, x, y, size, fore){
         ctx.save();
-        ctx.translate(x, y+2);
+        ctx.translate(x, y+1);
         ctx.rotate(0);
         
         // Define points for the full heart
         const start = {x: 0, y: 0};
-        const cp1 = {x: -size / 2.5, y: -size / 2};
-        const cp2 = {x: -size*1.2, y: size / 4.2};
-        const end = {x: 0, y: size*.96};
+        const cp1 = {x: -size / 2.1, y: -size / 1.7};
+        const cp2 = {x: -size*1.19, y: size / 3.2};
+        const end = {x: 0, y: size*1};
 
         ctx.strokeWidth = 0;
         ctx.beginPath();

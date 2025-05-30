@@ -4,13 +4,13 @@
  * depends on jQuery>=1.7
  */
 // Original background image dimensions
-const PORTRAIT_IMAGE_HEIGHT = 1080;
+const PORTRAIT_IMAGE_HEIGHT = 1200;
 const PORTRAIT_IMAGE_WIDTH = 1920;
 const LANDSCAPE_IMAGE_HEIGHT = 1080;
 const LANDSCAPE_IMAGE_WIDTH = 2500;
 // Your point on the original image
-const PORTRAIT_SCRATCHER_X = 670;
-const PORTRAIT_SCRATCHER_Y = 515;
+const PORTRAIT_SCRATCHER_X = 679;
+const PORTRAIT_SCRATCHER_Y = 636;
 const LANDSCAPE_SCRATCHER_X = 697;
 const LANDSCAPE_SCRATCHER_Y = 157;
 let targetX;
@@ -218,7 +218,6 @@ var pct=0;
     let factor=1;
     const screenHeight = window.innerHeight;
     const screenWidth = window.innerWidth;
-    //console.log("screen " + screenHeight + " " + screenWidth);
     let scaledImageHeight, scaledImageWidth, imageLeftOffset, imageTopOffset,canvasX, canvasY;
     let scale;
     if (isLandscape) {
@@ -239,7 +238,7 @@ var pct=0;
         originalHeight = PORTRAIT_IMAGE_HEIGHT;
         targetX = PORTRAIT_SCRATCHER_X;
         targetY = PORTRAIT_SCRATCHER_Y;
-        factor=1.17;
+        factor=1;
         scale = screenHeight / originalHeight;
         scaledImageWidth = originalWidth * scale;
         scaledImageHeight = screenHeight;
@@ -249,7 +248,7 @@ var pct=0;
         canvasY = imageTopOffset + targetY * scale;
     }
        
-
+    console.log("screen " + screenHeight + " " + screenWidth + " scale " + screenHeight/screenWidth);
         
         scratcher.style.left = `${canvasX}px`;
         scratcher.style.top = `${canvasY}px`;
@@ -259,6 +258,7 @@ var pct=0;
              // Always use the original canvas size for scaling
         scratcher.width = canvasOriginalWidth * scale * factor;
         scratcher.height = canvasOriginalHeight * scale * factor;
+    console.log(scratcher.width + " "+ screenWidth);
 
         // For iOS safe area
         scratcher.style.height = `calc(${scratcher.height}px - constant(safe-area-inset-bottom))`;
