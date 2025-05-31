@@ -234,95 +234,54 @@ Scratcher = (function() {
         let tempctx = this.canvas.temp.getContext('2d');
         let mainctx = this.canvas.main.getContext('2d');
         let drawctx = this.canvas.draw.getContext('2d');
-        //let offCanvas = document.createElement('canvas');
         let w = this.canvas.temp.width;
-        let h =this.canvas.temp.height;
+        let h = this.canvas.temp.height;
         // Step 1: clear the temp
         this.canvas.temp.width = this.canvas.temp.width; // resizing clears
         this.canvas.main.width = this.canvas.main.width; // resizing clears
-        //offCanvas.width = this.canvas.main.width; // resizing clears
-        //offCanvas.height = this.canvas.main.height; // resizing clears
+
+        // --- Draw background and foreground only in half-heart on temp canvas ---
         tempctx.save();
         tempctx.beginPath();
         switch(this.shape) {
             case 'heart':
-                drawHeart(tempctx,w/2,w/7,w/1.3,false);
+                drawHeart(tempctx, w/2, w/7, w/1.3, false); // left lobe only
                 break;
             case 'square':
-                drawRect(tempctx,0,0,w,w);
+                drawRect(tempctx, 0, 0, w, w);
                 break;
             case 'circle':
                 tempctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
                 break;
             default:
                 tempctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
-            }
+        }
         tempctx.closePath();
         tempctx.clip();
-        // Step 2: stamp the draw on the temp (source-over)
-        if(clear) {
+         if(clear) {
             drawctx.globalCompositeOperation = 'source-over';
             drawctx.drawImage(this.image.back.img, 0, 0,this.image.back.img.width, this.image.back.img.height,0,0,w,h);
         }
+        // Draw the background image only in the half-heart
+        tempctx.drawImage(this.image.back.img, 0, 0, this.image.back.img.width, this.image.back.img.height, 0, 0, w, h);
+        // Draw the foreground image only in the half-heart
+        tempctx.drawImage(this.image.front.img, 0, 0, this.image.front.img.width, this.image.front.img.height, 0, 0, w, h);
+        // Draw the scratch effect (draw canvas) only in the half-heart
+        tempctx.globalCompositeOperation = 'destination-out';
         tempctx.drawImage(this.canvas.draw, 0, 0);
-        tempctx.beginPath();
-        switch(this.shape) {
-            case 'heart':
-                drawHeart(tempctx,w/2,w/7,w/1.3,false);
-                break;
-            case 'square':
-                drawRect(tempctx,0,0,w,w);
-                break;
-            case 'circle':
-                tempctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
-                break;
-            default:
-                tempctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
-            }
-        tempctx.clip();
-        tempctx.closePath();
-        
-        //tempctx.restore();
-        // Step 3: stamp the background on the temp (!! source-atop mode !!)
-        if (!clear) {
-            tempctx.globalCompositeOperation = 'source-atop';
-            tempctx.drawImage(this.image.back.img, 0, 0,this.image.back.img.width, this.image.back.img.height,0,0,w,h);
-        } 
-        mainctx.save();
-        mainctx.beginPath();
-        switch(this.shape) {
-            case 'heart':
-                drawHeart(mainctx,w/2,w/7,w/1.3,true);
-                break;
-            case 'square':
-                drawRect(mainctx,0,0,w,w);
-                break;
-            case 'circle':
-                mainctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
-                break;
-            default:
-                mainctx.arc(w*0.5, w*0.5, w*0.5, 0, Math.PI * 2, true);
-            }
-        mainctx.closePath();
-        mainctx.clip();
-        // Step 4: stamp the foreground on the display canvas (source-over)
-        mainctx.drawImage(this.image.front.img, 0, 0,this.image.front.img.width, this.image.front.img.height,0,0,this.canvas.temp.width,this.canvas.temp.height);
-        switch(this.shape) {
-            case 'heart':
-                break;
-            case 'circle':
-                mainctx.arc(0, 0, w*0.5, 0, Math.PI * 2, true);
-                break;
-            default:
-                mainctx.arc(0, 0, w*0.5, 0, Math.PI * 2, true);
-            }
-       
-        //tempctx.restore();
-        // Step 5: stamp the temp on the display canvas (source-over)
+        tempctx.globalCompositeOperation = 'source-over';
+        // --- Explicitly clear the 1px vertical artifact at the center edge ---
+        tempctx.save();
+        tempctx.globalCompositeOperation = 'destination-out';
+        tempctx.fillStyle = 'rgba(0,0,0,1)';
+        tempctx.fillRect(w/2 - 1, 0, 4, h); // clear a 2px-wide vertical strip at the center
+        tempctx.restore();
+
+        // Step 2: draw the full background on the main canvas (no clipping)
         mainctx.globalCompositeOperation = 'source-over';
-
+        mainctx.drawImage(this.image.back.img, 0, 0, this.image.back.img.width, this.image.back.img.height, 0, 0, w, h);
+        // Step 3: draw the temp (half-heart foreground + scratch) on top
         mainctx.drawImage(this.canvas.temp, 0, 0);
-
     };
     function drawRect(context,x,y,width,height) {
         context.rect(x,y,width,height);
@@ -331,21 +290,21 @@ Scratcher = (function() {
         ctx.save();
         ctx.translate(x, y+1);
         ctx.rotate(0);
-        
         // Define points for the full heart
         const start = {x: 0, y: 0};
         const cp1 = {x: -size / 2.1, y: -size / 1.7};
         const cp2 = {x: -size*1.19, y: size / 3.2};
-        const end = {x: 0, y: size*1};
-
-        ctx.strokeWidth = 0;
+        const end = {x: 0, y: size*0.98};
+        const cp3 = {x: size*1.19, y: size / 3.2};
+        const cp4 = {x: size / 2.1, y: -size / 1.7};
         ctx.beginPath();
         ctx.moveTo(start.x, start.y);
         ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y); // Left lobe
-        //ctx.bezierCurveTo(cp3.x, cp3.y, cp4.x, cp4.y, start.x, start.y); // Right lobe
-        ctx.restore();
-
+        if (fore) {
+            ctx.bezierCurveTo(cp3.x, cp3.y, cp4.x, cp4.y, start.x, start.y); // Right lobe
+        }
         ctx.closePath();
+        ctx.restore();
     }
     function printAtWordWrap( offCanvas, context , text, x, y, lineHeight, fitWidth,indent)
 {
@@ -421,14 +380,12 @@ Scratcher = (function() {
          * Dispatches the 'scratchesbegan' event.
          */
         function mousedown_handler(e) {
-            if (this.triggered) {return;}
+            // Remove: if (this.triggered) {return;}
             let local = getLocalCoords(c, getEventCoords(e));
             this.mouseDown = true;
             this.scratchLine(local.x, local.y, true);
             this.recompositeCanvases(false);
-            
             this.dispatchEvent(this.createEvent('scratchesbegan'));
-            
             return false;
         };
     
@@ -439,15 +396,11 @@ Scratcher = (function() {
          * the canvas
          */
         function mousemove_handler(e) {
-            if (this.triggered) {return;}
-
+            // Remove: if (this.triggered) {return;}
             if (!this.mouseDown) { return true; }
-    
             let local = getLocalCoords(c, getEventCoords(e));
-    
             this.scratchLine(local.x, local.y, false);
             this.recompositeCanvases(false);
-    
             return false;
         };
     
@@ -457,16 +410,12 @@ Scratcher = (function() {
          * Dispatches the 'scratchesended' event.
          */
         function mouseup_handler(e) {
-            if (this.triggered) {return;}
-
+            // Remove: if (this.triggered) {return;}
             if (this.mouseDown) {
                 this.mouseDown = false;
-    
                 this.dispatchEvent(this.createEvent('scratchesended'));
-    
                 return false;
             }
-    
             return true;
         };
     

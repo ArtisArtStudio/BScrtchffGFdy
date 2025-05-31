@@ -3,24 +3,8 @@
  *
  * depends on jQuery>=1.7
  */
-// Original background image dimensions
-const PORTRAIT_IMAGE_HEIGHT = 1200;
-const PORTRAIT_IMAGE_WIDTH = 1920;
-const LANDSCAPE_IMAGE_HEIGHT = 1080;
-const LANDSCAPE_IMAGE_WIDTH = 2500;
-// Your point on the original image
-const PORTRAIT_SCRATCHER_X = 679;
-const PORTRAIT_SCRATCHER_Y = 636;
-const LANDSCAPE_SCRATCHER_X = 697;
-const LANDSCAPE_SCRATCHER_Y = 157;
-let targetX;
-let targetY;
-let originalWidth;
-let originalHeight;
-
-let scratcher, canvasOriginalHeight, canvasOriginalWidth;
+var canvas;
 var scratchers = [];
-var pct=0;
 (function() {
     /**
      * Returns true if this browser supports canvas
@@ -45,8 +29,8 @@ var pct=0;
     var gendertext = gendertext1;
     var surname;
     var soundHandle = new Audio();
-    var triggered=false;
-    var nosound=true;
+    var triggered = false;
+    var nosound = true;
     var params = new URLSearchParams(window.location.search.slice(1));
 
     function supportsCanvas() {
@@ -58,20 +42,20 @@ var pct=0;
      * Handle scratch event on a scratcher
      */
     function checkpct() {
-        var p = 15;
+        var p = 16;
 
 
         if (!triggered) {
-            if (pct>0)  {
-                if (pct<p)  {
+            if (pct > 10 && pct < p) {
                 //document.getElementById("scratcher3Pct").innerHTML="Scratch MORE!";
-                if (!CrispyToast.clearall()){
-                    CrispyToast.success('Scratch MORE!',{ position: 'top-center' },{timeout: 3000});
-                    }
+                if (CrispyToast.toasts.length===0) {
+                    CrispyToast.success('Scratch MORE!', { position: 'top-center', timeout: 2000});
                 } 
             }
-           
             if (pct>p) {
+                if(CrispyToast.toasts.length!=0){
+                    CrispyToast.clearall();
+                }
                 $('#tboy').show();
                 $('#tboy').text(gendertext);
                 $('#tboy').css('color',colortxt);
@@ -79,43 +63,36 @@ var pct=0;
                 $('.images').hide();
                 $('#or').hide();
                 $('#girl').hide();
-                //document.getElementsByTagName("body")[0].style.backgroundColor = color;
-                //document.getElementsByTagName("body")[0].style.backgroundImage = 'none';
+                document.getElementsByTagName("body")[0].style.backgroundColor = color;
+                document.getElementsByTagName("body")[0].style.backgroundImage = 'none';
                 //document.getElementById("H3").insertAdjacentHTML('afterend', "<h4 id='testtext' style='white-space:normal'> Depending on the product you buy, here it will say either <br> 'It is a Girl!' or 'It is a Boy! with pink or blue background.</h4>");
 
                 $('#H3').hide();
                 $('#H4').hide();
-                //$('#scratcher3Pct').hide();
                 scratchers[0].clear();
                 confetti_effect();
             }
         }
     };
     function scratcher1Changed(ev) {
-        pct = (this.fullAmount(40) * 100)|0;
+        pct = (this.fullAmount(30) * 100) | 0;
         checkpct();
     };
    
     function randomInRange(min, max) {
         return Math.random() * (max - min) + min;
     };
-    function randomInRangeint(min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
-    };
     function confetti_effect() {
-        //defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-        
-        
-        if(triggered==true) {
+        if (triggered == true) {
             return;
         }
         if (!nosound) {
-            soundHandle.volume=0.5;
+            soundHandle.volume = 0.5;
             soundHandle.play();
         }
-        triggered=true;
+        triggered = true;
        for (let i = 1; i < 4; i++) {
-            let scratcherCanvas = document.getElementById('scratcher'); // scratchers[2] corresponds to 'scratcher3'
+            let scratcherCanvas = document.getElementById('scratcher1'); // scratchers[2] corresponds to 'scratcher3'
             let rect = scratcherCanvas.getBoundingClientRect();
             let centerX = (rect.left + rect.right) / 2 / window.innerWidth;
             let centerY = (rect.top + rect.bottom) / 2 / window.innerHeight;
@@ -161,7 +138,7 @@ var pct=0;
     function onResetClicked(scratchers) {
         var i;
         pct = 0;
-        //$("#scratcher3Pct").hide();
+        CrispyToast.toasts=[];
         $("#resetbutton").hide();
         for (i = 0; i < scratchers.length; i++) {
             scratchers[i].reset();
@@ -173,8 +150,8 @@ var pct=0;
         $('#girl').show();
         $('.images').show();
 
-        //document.getElementsByTagName("body")[0].style.backgroundColor = "#ffffff";
-        //document.getElementsByTagName("body")[0].style.backgroundImage = 'url(images/background.jpg)';
+        document.getElementsByTagName("body")[0].style.backgroundColor = "#ffffff";
+        document.getElementsByTagName("body")[0].style.backgroundImage = 'url(images/background.jpg)';
         // document.getElementById('testtext').remove();
 
         $('#H3').show();
@@ -184,104 +161,36 @@ var pct=0;
         soundHandle.currentTime = 0;    
         return false;
     };
-    
-    /**
-     * Assuming canvas works here, do all initial page setup
-     */
-    // function handleOrientationChange(mql) {
-    //     if (mql.matches) {
-    //         /* The viewport is currently in portrait orientation */
-    //         if(window.innerHeight>900) {
-    //             size=130}
-    //         else {
-    //             size=100;
-    //         }
- 
-    //       } else {
-    //         /* The viewport is not currently in portrait orientation, therefore landscape */
-    //         console.log(window.innerHeight + " " + window.innerWidth);
-    //         size=100;
-    //         if (window.innerWidth>900 && window.innerWidth>window.innerHeight*1.2){
-    //             console.log("yes");
-    //             size = 130;
-    //         }
-    //       }
-          
-    //       $('#scratcher1').width(size);
-    //       $('#scratcher1').css('width',size);
-
-    
-    //   }
-    function positionCanvas() {
-        // Use media query to match CSS orientation logic
-    const isLandscape = window.matchMedia('(orientation: landscape) and (max-width: 1023px)').matches;
-    let factor=1;
-    const screenHeight = window.innerHeight;
-    const screenWidth = window.innerWidth;
-    let scaledImageHeight, scaledImageWidth, imageLeftOffset, imageTopOffset,canvasX, canvasY;
-    let scale;
-    if (isLandscape) {
-        originalWidth = LANDSCAPE_IMAGE_WIDTH;
-        originalHeight = LANDSCAPE_IMAGE_HEIGHT;
-        targetX = LANDSCAPE_SCRATCHER_X;
-        targetY = LANDSCAPE_SCRATCHER_Y;
-        factor=1.5;
-        scale = screenWidth / originalWidth;
-        scaledImageWidth = screenWidth;
-        scaledImageHeight = originalHeight * scale;
-        imageLeftOffset = 0;
-        imageTopOffset = (screenHeight - scaledImageHeight) / 2;
-        canvasX = imageLeftOffset + targetX * scale;
-        canvasY = imageTopOffset + targetY * scale;
-    } else {
-        originalWidth = PORTRAIT_IMAGE_WIDTH;
-        originalHeight = PORTRAIT_IMAGE_HEIGHT;
-        targetX = PORTRAIT_SCRATCHER_X;
-        targetY = PORTRAIT_SCRATCHER_Y;
-        factor=1;
-        scale = screenHeight / originalHeight;
-        scaledImageWidth = originalWidth * scale;
-        scaledImageHeight = screenHeight;
-        imageLeftOffset = (screenWidth - scaledImageWidth) / 2;
-        imageTopOffset = 0;
-        canvasX = imageLeftOffset + targetX * scale;
-        canvasY = imageTopOffset + targetY * scale;
-    }
-       
-    console.log("screen " + screenHeight + " " + screenWidth + " scale " + screenHeight/screenWidth);
-        
-        scratcher.style.left = `${canvasX}px`;
-        scratcher.style.top = `${canvasY}px`;
-        //alert();
-        //alert("screen " + screenHeight);
-        // Optionally scale canvas size too
-             // Always use the original canvas size for scaling
-        scratcher.width = canvasOriginalWidth * scale * factor;
-        scratcher.height = canvasOriginalHeight * scale * factor;
-    console.log(scratcher.width + " "+ screenWidth);
-
-        // For iOS safe area
-        scratcher.style.height = `calc(${scratcher.height}px - constant(safe-area-inset-bottom))`;
-        scratcher.style.height = `calc(${scratcher.height}px - env(safe-area-inset-bottom))`; 
-        
+    function fitCanvastoDiv() {
+        var ttd = $(canvas).parent();
+        // var ttd = document.getElementById('scratcher-box');
+        canvas.width = ttd.width();
+        canvas.height = canvas.width;
         if(scratchers[0]){ 
             if (triggered) {
-            scratchers[0].resetnoclear(true);
-        } else {
-            scratchers[0].resetnoclear(false);
-        }   
+                scratchers[0].resetnoclear(true);
+            } else {
+                scratchers[0].resetnoclear(false);
+            }   
         }
-      }
-      
-     
+    }
     function initPage() {
         var scratcherLoadedCount = 0;
+        canvas = document.getElementById("scratcher1");
         var i, i1;    
-        // if (window.confirm('This scratch off contains sound when the gender is revealed. Do you want to continue with sound? (Ok:with sound, Cancel:without sound')) {
-        //     nosound=false;
-        //   } else {
-        //     nosound=true;
-        // }
+
+        // document.addEventListener('mousedown', setMousePos, false);
+        // function setMousePos(event) {
+        //     cursor_x = event.pageX;
+        //     cursor_y = event.pageY;
+        //     }
+        $( window ).on({
+            orientationchange: function(e) {
+                fitCanvastoDiv();
+            },resize: function(e) {
+                fitCanvastoDiv();
+            }
+        });        
 
         surname = params.get('surname');
         if (surname !=null && surname.replace(/\s/g, '').length) {
@@ -296,19 +205,18 @@ var pct=0;
         //document.getElementById('intro').innerHTML= "This is a gender reveal scratch off for <strong>" + surname + "</strong> family. It contains sound when the gender is revealed. Do you want to continue with sound?";
         document.getElementById('surname').innerHTML= surname;
 
-        //document.getElementById('id01').style.display='block';
-        
+        document.getElementById('id01').style.display = 'block';
         $('.nosoundbtn').on("click", function (e) {
-            document.getElementById('id01').style.display='none';
-            nosound=true;
+            document.getElementById('id01').style.display = 'none';
+            nosound = true;
         });
         $('.withsoundbtn').on("click", function (e) {
-            document.getElementById('id01').style.display='none';
-            nosound=false;
-            if (soundHandle.currentTime!=0) {return;}
+            document.getElementById('id01').style.display = 'none';
+            nosound = false;
+            if (soundHandle.currentTime != 0) { return; }
                 soundHandle = document.getElementById('soundHandle');  
                 soundHandle.autoplay = true;
-                soundHandle.muted=false;
+            soundHandle.muted = false;
                 soundHandle.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
                 soundHandle.src = 'audio/celebrate.mp3';
                 soundHandle.play();
@@ -316,10 +224,11 @@ var pct=0;
         });
         document.addEventListener(
             "visibilitychange",
-             function(evt) {
+            function (evt) {
               if (document.visibilityState != "visible") {
                 soundHandle.pause();
-                soundHandle.currentTime=0;              }
+                    soundHandle.currentTime = 0;
+                }
             },
             false,
           );
@@ -340,48 +249,30 @@ var pct=0;
                 // all scratchers loaded!
     
                 // bind the reset button to reset all scratchers
-                $('#resetbutton').on('click', function() {
+                $('#resetbutton').on('click', function () {
                         onResetClicked(scratchers);
                     });
-                positionCanvas();
+                fitCanvastoDiv();
+
                 // hide loading text, show instructions text
                 //$('#loading-text').hide();
                 //$('#inst-text').show();
             }
         };
-        scratcher = document.getElementById('scratcher');
-        canvasOriginalHeight=scratcher.height;
-        canvasOriginalWidth=scratcher.width;
-        scratcher.style.zIndex = '0';
-        /* scratcher = document.createElement('canvas');
-        scratcher.id = 'scratcher';
-        canvas.style.zIndex = '0';
 
-        scratcher.width = 200;  // or any width you want
-        scratcher.height = 200; // or any height you want
-
-        // Style the canvas
-        scratcher.style.position = 'absolute'; */
+        // create new scratchers
         scratchers = new Array(1);
-        scratchers[0] = new Scratcher('scratcher');
+        scratchers[0] = new Scratcher('scratcher1');
         scratchers[0].setShape('heart'); 
         // set up this listener before calling setImages():
         scratchers[0].addEventListener('imagesloaded', onScratcherLoaded);
-        scratchers[0].setImages('images/s1bg.jpg','images/foreground.jpg');
+        scratchers[0].setImages('images/s1bg.png','images/foreground.jpg');
   
          // get notifications of this scratcher changing
          // (These aren't "real" event listeners; they're implemented on top
          // of Scratcher.)
          //scratchers[3].addEventListener('reset', scratchersChanged);
          scratchers[0].addEventListener('scratchesended', scratcher1Changed);
-         
-         $( window ).on({
-            orientationchange: function(e) {
-                positionCanvas();
-            },resize: function(e) {
-                positionCanvas();
-            }
-        });        
          
          // var canvas = document.getElementById('scratcher1');
          // canvas.onmousemove = null;
@@ -391,7 +282,10 @@ var pct=0;
          //scratchers[2].addEventListener('scratchesended', scratcher3Changed);
      };
     
-    $(function() {
+    /**
+     * Handle page load
+     */
+    $(function () {
         if (supportsCanvas()) {
             initPage();
         } else {
