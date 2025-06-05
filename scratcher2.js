@@ -258,16 +258,21 @@ Scratcher = (function() {
         }
         tempctx.closePath();
         tempctx.clip();
-         if(clear) {
+         /* if(clear) {
             drawctx.globalCompositeOperation = 'source-over';
             drawctx.drawImage(this.image.back.img, 0, 0,this.image.back.img.width, this.image.back.img.height,0,0,w,h);
-        }
+        } */
         // Draw the background image only in the half-heart
         tempctx.drawImage(this.image.back.img, 0, 0, this.image.back.img.width, this.image.back.img.height, 0, 0, w, h);
         // Draw the foreground image only in the half-heart
         tempctx.drawImage(this.image.front.img, 0, 0, this.image.front.img.width, this.image.front.img.height, 0, 0, w, h);
         // Draw the scratch effect (draw canvas) only in the half-heart
-        tempctx.globalCompositeOperation = 'destination-out';
+        if (clear){
+                    this.canvas.draw.width = this.canvas.draw.width; // clear the draw canvas
+                    tempctx.globalCompositeOperation = 'destination-in';
+        } else {
+                    tempctx.globalCompositeOperation = 'destination-out';
+        }
         tempctx.drawImage(this.canvas.draw, 0, 0);
         tempctx.globalCompositeOperation = 'source-over';
         // --- Explicitly clear the 1px vertical artifact at the center edge ---

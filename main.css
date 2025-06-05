@@ -47,7 +47,7 @@ font-weight: 400;
 flex-direction: column;
 font-size: calc(3rem + 2vw);
 text-align: center;
-text-shadow: 4px 6px #FFFFFF;
+text-shadow: 3px 2px #ffffff;
 } 
 
 .pagetop h3 {
@@ -189,9 +189,7 @@ white-space:normal;
     .pagetop h3 {
     font-size: calc(1.2rem + 0.5vw);
   }
-  #t1 {
-    line-height: 1 !important;
-  }
+
   /* #mainbody {
     position: inherit;
       -webkit-transform-origin: top left;

@@ -59,11 +59,10 @@ padding-right: 10px;
 } 
 
 .pagetop h3 {
-font-family: "Bona Nova SC", serif;
 color: #000000 !important;
 font-style: normal;
 font-size: calc(1rem + 1vw);
-text-align: right;
+text-align: center;
 } 
 .pagetop h4 {
   font-family: "Roboto", sans-serif;
@@ -79,12 +78,18 @@ text-align: right;
   float:right;
   
 }
-  
+#this {
+    position: relative;
+    left: 50%;
+    top: 0;
+    width: calc(50% - 10px);
+    text-align: center;
+    transform: translateX(0); /* No horizontal shift, just anchor to right half */
+}
   #t1 {
     display:inline-table;
     text-align: center;
     width: calc(50% - 10px);
-    line-height: 0.5 !important;
 
     /*transform: translateX(-10%) scale(0.8, 0.8);*/
   }
@@ -103,15 +108,12 @@ text-align: right;
   margin-right: 0;
   text-align:right;
   width: calc(50% - 10px);
-  line-height: 1 !important;
 
+  
 }
-#boy{
-  text-align: right;
-}
-.images{
+/* .images{
   max-width: 300px !important;
-} 
+}  */
 #reveal {
   float: right;
   display: inline-table;
@@ -150,7 +152,7 @@ text-align: right;
 }
 @media (min-height: 365px) and (max-width: 671px) { 
   .pagetop h1 {
-    font-size: calc(5rem + 1vw);
+    font-size: calc(3rem + 1.2vw);
   }
   .pagetop h4 {
     font-size: calc(0.5rem + 0.70vw);
@@ -175,7 +177,7 @@ text-align: right;
 }
 @media (max-height: 375px){ 
   .pagetop h1 {
-    font-size: calc(5rem + 0.55vw);
+    font-size: calc(2rem + 3.2vw);
   }
   .pagetop h4 {
     font-size: calc(0.5rem + 0.70vw);
@@ -184,8 +186,8 @@ text-align: right;
     font-size: calc(1rem + 1vw);
   }
   #scratcher-box {
-    width: 18em;
-    height: 18em;
+    width: 20em;
+    height: 20em;
     top: 50%;
     left: 0%;
   }
@@ -195,13 +197,12 @@ text-align: right;
 
   }
   #reveal {
-    width: calc(50% - 10px);
+    width: calc(55% - 10px);
 
   }
   .pagetop {
     top:0%;
   }
-  
 }
 @media (min-width: 672px) { 
   
@@ -213,37 +214,48 @@ text-align: right;
     width: calc(55% - 10px);
   }
 }
-@media screen and (max-height:321px){ 
+@media screen and (max-height:355px){ 
   .pagetop h1 {
-    font-size: calc(2rem + 6vw);
+    font-size: calc(1.2rem + 5vw);
   }
-  .pagetop h3 {
-    font-size: calc(1rem + 0.2vh);
+  #scratcher-box {
+    width: 18em;
+    height: 18em;
+    top: 50%;
+    left: 0%;
+  } 
+  .images{
+    max-width: 250px !important;
+  }
+}
+@media screen and (max-height:320px){ 
+  .pagetop h1 {
+    font-size: calc(1rem + 5vw);
   }
   #scratcher-box {
     width: 16em;
     height: 16em;
-    top: 52%;
+    top: 50%;
     left: 5%;
   } 
-  .images{
+/*   .images{
     max-width: 250px !important;
-  } 
+  }  */
 }
 @media screen and (max-height:290px){ 
   .pagetop h1 {
-    font-size: calc(2rem + 6vw);
+    font-size: calc(1rem + 5vw);
   }
   #scratcher-box {
     width: 15em;
     height: 15em;
-    top: 52%;
+    top: 50%;
     left: 3vw;
   } 
   
-  .images{
+/*   .images{
     max-width: 250px !important;
-  } 
+  }  */
 }
 /* @media (max-height:351px) and (min-height:319){ 
   
@@ -286,7 +298,7 @@ cursor: grab;
 }
 #scratcher1, #scratcher2, #scratcher3, #scratcher4, #scratcher5, #scratcher6, #scratcher7, #scratcher8, #scratcher9 {
   width: 100%;
-  padding: 5px;
+  padding: 0px;
   
 }
 #resetbutton {

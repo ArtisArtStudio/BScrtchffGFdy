@@ -66,7 +66,7 @@ var scratchers = [];
                 document.getElementsByTagName("body")[0].style.backgroundColor = color;
                 document.getElementsByTagName("body")[0].style.backgroundImage = 'none';
                 //document.getElementById("H3").insertAdjacentHTML('afterend', "<h4 id='testtext' style='white-space:normal'> Depending on the product you buy, here it will say either <br> 'It is a Girl!' or 'It is a Boy! with pink or blue background.</h4>");
-
+                $('#this').hide();
                 $('#H3').hide();
                 $('#H4').hide();
                 scratchers[0].clear();
@@ -153,7 +153,7 @@ var scratchers = [];
         document.getElementsByTagName("body")[0].style.backgroundColor = "#ffffff";
         document.getElementsByTagName("body")[0].style.backgroundImage = 'url(images/background.jpg)';
         // document.getElementById('testtext').remove();
-
+        $('#this').show();
         $('#H3').show();
         $('#H4').show();
         triggered = false;
