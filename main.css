@@ -16,12 +16,11 @@ body {
   background-image: url(images/background.jpg);
   background-color: #ffffff;
   background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: auto 100svh; /* scales image to 100% height */
+  background-position: center top;
+  /* background-attachment: fixed; */
+  background-size: auto 100svh; /* always fit to height */
+  -o-background-size: auto 100svh;
+  -moz-background-size: auto 100svh;
   overflow: hidden;
   position: relative;
 
